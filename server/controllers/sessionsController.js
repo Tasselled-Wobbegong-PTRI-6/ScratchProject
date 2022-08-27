@@ -38,7 +38,16 @@ sessionController.deleteExistingSession = (req, res, next) => {
 sessionController.startSession = (req, res, next) => {
   const { username } = req.body;
 
+  // try {
+  //   const deleteSessionSuccess = await deleteExistingSession(username);
+  //   if (!deleteSessionSuccess) res.locals.success = false;
+  // } catch (err) {
+  //   return next(err);
+  // }
   
+  const deleteSessionSuccess = await deleteExistingSession(username);
+  if (!deleteSessionSuccess) res.locals.success = false;
+  if (typeof(deleteSessionSuccess) === "object") return next(err);
 
   if (!res.locals.success) return next();
 
@@ -149,5 +158,47 @@ const timestampToMs = (timestamp) => {
   const timeSplit = timestampString.split(/[- : . T Z]/);
   return Date.UTC(timeSplit[0], timeSplit[1]-1, timeSplit[2], timeSplit[3], timeSplit[4], timeSplit[5], timeSplit[6]);
 }
+
+
+const deleteExistingSession = async (username) => {
+  const err = {
+    log: `Query error in deleteExistingSession: `,
+    status: 500,
+    message: 'Error deleting session. See console.'
+  };
+  throw err;
+  let user_id;
+  try {
+
+    const userRes = await db.queryAsync(queries.getUserFromUsername, [username]);
+    if (userRes.rows.length === 0) return false;
+    user_id = userRes.rows[0]._id;
+
+  } catch (userErr) {
+
+    const err = {
+      log: `Query error in deleteExistingSession: ${userErr}`,
+      status: 500,
+      message: 'Error deleting session. See console.'
+    };
+    return err;
+
+  }
+
+  try {
+
+    await db.queryAsync(queries.deleteSession, [user_id]);
+    return true;
+
+  } catch (deleteErr) {
+    const err = {
+      log: `Query error in deleteExistingSession: ${deleteErr}`,
+      status: 500,
+      message: 'Error deleting session. See console.'
+    };
+    return err;
+  }
+
+};
 
 module.exports = sessionController;

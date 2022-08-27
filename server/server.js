@@ -37,10 +37,10 @@ server.use((err, req, res, next) => {
     const errorObj = Object.assign({}, defaultErr, err);
     console.log(errorObj.log);
     return res.status(errorObj.status).json(errorObj.message);
-  });
+});
 
-  server.listen(PORT, () => {
-    console.log(`Server listening on port: ${PORT}...`);
-  });
-  
-  module.exports = server;
+server.listen(PORT, () => {
+  console.log(`Server listening on port: ${PORT}...`);
+});
+
+module.exports = server;

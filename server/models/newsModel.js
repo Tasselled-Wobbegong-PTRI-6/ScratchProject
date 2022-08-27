@@ -10,5 +10,9 @@ module.exports = {
   query: (text, params, callback) => {
     console.log('executed query', text);
     return pool.query(text, params, callback);
+  },
+  queryAsync: async (text, params) => {
+    console.log('executed query', text);
+    return await pool.query(text, params);
   }
 };

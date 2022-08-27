@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/signup', 
   userController.createUser, 
-  sessionController.deleteExistingSession,
+  // sessionController.deleteExistingSession,
   sessionController.startSession,
   cookieController.setSSIDCookie,
   (req, res) => {
@@ -21,7 +21,7 @@ router.post('/signup',
 
 router.get('/login', 
   userController.verifyUser, 
-  sessionController.deleteExistingSession,
+  // sessionController.deleteExistingSession,
   sessionController.startSession,
   cookieController.setSSIDCookie,
   (req, res) => {
